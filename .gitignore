@@ -6,3 +6,7 @@ Thumbs.db
 
 # Config
 config.php
+
+# Composer
+composer.phar
+/vendor/
