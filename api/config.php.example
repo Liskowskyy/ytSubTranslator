@@ -1,0 +1,4 @@
+<?php
+    //Key for DeepL API
+    //Get your key from here: https://www.deepl.com/en/your-account/keys
+    $DeepLAPIKey = '';
