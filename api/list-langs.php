@@ -14,11 +14,13 @@
 
     //Enclose in try to return an error if API Key is invalid
     try {
+        $sourceLanguages = $deepl->getSourceLanguages(); //Get source langs from API
         $targetLanguages = $deepl->getTargetLanguages(); //Get targets langs from API
 
         //Return list
         $response["status"] = "success";
-        $response["data"] = $targetLanguages;
+        $response["data"]["sourceLanguages"] = $sourceLanguages;
+        $response["data"]["targetLanguages"] = $targetLanguages;
 
         echo json_encode($response);
         
