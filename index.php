@@ -102,7 +102,7 @@
     <?php
         //Send request to API if it was sent to site
         if(isset($_FILES["subtitleFile"]) && isset($_POST["source"]) && isset($_POST["targets"])) {
-            $url = "{$_SERVER['HTTP_HOST']}/api/translate.php";
+            $url = "{$protocol}{$_SERVER['HTTP_HOST']}/api/translate.php";
 
             $uploadName = $_FILES['subtitleFile']['name'];
             $curlFile = curl_file_create($_FILES['subtitleFile']['tmp_name'], posted_filename: $uploadName);
