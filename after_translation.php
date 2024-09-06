@@ -46,15 +46,33 @@
         ?>
 
         <?php
-                //Download each translation as a file
-                foreach($translations as $translationTarget => $translationContent) {
-        ?>
+                //If one file then download directly
+                if(count((array)$translations) == 1) {
+                    foreach($translations as $translationTarget => $translationContent) {
+                ?>
                     <iframe src="text_to_file.php?content=<?=urlencode($translationContent)?>&target=<?=$translationTarget?>"></iframe>
-        <?php
+                <?php
+                    }
+                }
+                else if(count((array)$translations) > 1) {
+                    //Pack each file into one zip
+                    $zip = new ZipArchive;
+                    $file = tempnam('.', 'zip');
+                    register_shutdown_function('unlink', $file);
+                    $zip->open($file, ZipArchive::OVERWRITE);
+
+                    foreach($translations as $translationTarget => $translationContent) {
+                        $zip->addFromString($translationTarget.".srt", $translationContent);
+                    }
+
+                    $zip->close();
+                    $filename = date(DATE_ATOM).".zip";
+                    header('Content-Type: application/zip');
+                    header('Content-Length: ' . filesize($file));
+                    header('Content-Disposition: attachment; filename="'.$filename.'"');
+                    readfile($file);
                 }
             }
-
-
         ?>
 </body>
 </html>
