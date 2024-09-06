@@ -68,7 +68,7 @@
                     $zip->close();
                     $filename = date(DATE_ATOM).".zip";
                     header('Content-Type: application/zip');
-                    header('Content-Length: ' . filesize($file));
+                    //header('Content-Length: ' . filesize($file)); //Breaks downloads on server!
                     header('Content-Disposition: attachment; filename="'.$filename.'"');
                     readfile($file);
                 }
