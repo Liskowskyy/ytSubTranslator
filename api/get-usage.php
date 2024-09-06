@@ -33,6 +33,7 @@
     }
     catch(Exception $e) {
         //Get error message and return it
+        http_response_code(500);
         $response["status"] = "error";
         $response["message"] = $e->getMessage();
 

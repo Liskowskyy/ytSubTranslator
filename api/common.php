@@ -1,5 +1,6 @@
 <?php
     function returnFail($message) {
+        http_response_code(400);
         $response["status"] = "fail";
         $response["message"] = $message;
 
