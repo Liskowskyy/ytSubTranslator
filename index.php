@@ -7,6 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
         .progress { margin-left: auto; margin-right:auto; }
+        .fSupport {display: none;} /* Hide formality support by default */
     </style>
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -83,12 +84,36 @@
                 ?>
                     <div class="form-check form-check-inline">
                         <input type="checkbox" class="form-check-input target-lang-checkbox" value="<?=$targetLang->code?>">
-                        <label class="form-check-label" for="<?=$targetLang->code?>"><?=$targetLang->name?></label>
+                        <label class="form-check-label" for="<?=$targetLang->code?>">
+                            <?=$targetLang->name?>
+                            <sup class="fSupport"> <!--Add a superscript f if target lang supports formality settings -->
+                                <?php
+                                    if($targetLang->supportsFormality) echo "f";
+                                ?>
+                            </sup>
+                        </label>
                     </div>
                 <?php
                     }
                 ?>
             </div>
+        </div>
+
+        <br>
+
+        <span class="fSupport">
+            <sup>f</sup> - target language with support for formality settings
+        </span>
+
+        <br>
+
+        <div class="row justify-content-center">
+        <label class="form-select-label" for="formalitySelect">Formality:</label>
+            <select class="form-control text-center center-block" id="formalitySelect" name="formality" style="width:50%">
+                <option value="informal">Informal</option>
+                <option selected="selected" value="default">Default</option>
+                <option value="formal">Formal</option>
+            </select>
         </div>
 
         <br>
@@ -112,6 +137,15 @@
         $("#targets").val(targets);
         });
     </script>
+
+    <script>
+        $("#formalitySelect").on("change", function() {
+            if(this.value != "default") $('.fSupport').css('display', 'inline-block');
+            else $('.fSupport').css('display', 'none')
+        });
+    </script>
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

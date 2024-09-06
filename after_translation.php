@@ -22,6 +22,7 @@
                     'subtitleFile' => $curlFile,
                     'source' => $_POST["source"],
                     'targets' => $_POST["targets"],
+                    'formality' => $_POST["formality"],
                 );
 
                 $ch = curl_init();
