@@ -111,6 +111,12 @@
             $result = curl_exec($ch);
             $result = json_decode($result);
 
+            //Display message on error
+            if($result->status != "success") {
+                echo "<p class='text-center'>Failed: ".$result->message.'</p>';
+                exit();
+            }
+
             $translations = $result->data->translations;
 
             curl_close($ch);
