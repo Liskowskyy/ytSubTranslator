@@ -18,6 +18,10 @@
         $autoDetectLang = ["name" => "Detect language", "code" => null, "supportsFormality" => null]; //Add element for auto detection
         array_unshift($sourceLanguages, $autoDetectLang); //Add auto detection to target lang list
         $targetLanguages = $deepl->getTargetLanguages(); //Get targets langs from API
+        
+        //Fix Chinese, the distinction was added after last update, so it's wrong
+        unset($targetLanguages[count($targetLanguages)-2]);
+        array_push($targetLanguages, ["name" => "Chinese (traditional)", "code" => "ZH-HANT", "supportsFormality" => false]);
 
         //Return list
         $response["status"] = "success";
