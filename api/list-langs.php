@@ -20,8 +20,13 @@
         $targetLanguages = $deepl->getTargetLanguages(); //Get targets langs from API
         
         //Fix Chinese, the distinction was added after last update, so it's wrong
-        //unset($targetLanguages[count($targetLanguages)-2]); //For whatever reason this breaks translating on server
-        array_push($targetLanguages, ["name" => "Chinese (traditional)", "code" => "ZH-HANT", "supportsFormality" => false]);
+        foreach($targetLanguages as $targetLanguage) {
+            if($targetLanguage->code == "ZH") {
+                $targetLanguage->code = "ZH-HANT";
+                $targetLanguage->name = "Chinese (traditional)";
+                break;
+            }
+        }
 
         //Return list
         $response["status"] = "success";
