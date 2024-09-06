@@ -50,6 +50,14 @@
         returnFail("Source language invalid");
     }
 
+    $formality = "default"; //Formality default if nothing entered in params
+
+    //Get formality if entered, leave on default if not set properly/left on default
+    if(isset($_POST["formality"])) {
+        if($_POST["formality"] == "formal") $formality = "prefer_more";
+        else if($_POST["formality"] == "informal") $formality = "prefer_less";
+    }
+
     //Check size
     if($_FILES['subtitleFile']['size'] > $maxUploadSize) {
         returnFail("Subtitle file too big");
@@ -90,7 +98,7 @@
     try {
             foreach($targets as $target) {
                 //Translate subs
-                $translationResult = $deepl->translateText($captionsArrayToTranslate, $source, $target);
+                $translationResult = $deepl->translateText($captionsArrayToTranslate, $source, $target, ['formality' => $formality]);
 
                 $subtitlesTranslated = new Subtitles();
                 
