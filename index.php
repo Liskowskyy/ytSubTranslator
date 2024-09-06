@@ -43,7 +43,7 @@
 
     <br>
 
-    <form action="" method="post" enctype="multipart/form-data" class="text-center">
+    <form action="after_translation.php" method="post" enctype="multipart/form-data" class="text-center">
         <div class="custom-file center-block">
             <input type="file" class="custom-file-input" id="subtitleFile" name="subtitleFile" accept=".srt, .vtt, .sbv" required>
             <label class="custom-file-label" for="subtitleFile">Choose file</label>
@@ -89,51 +89,6 @@
         <input id="targets" type="hidden" name="targets" value="">
         <button type="submit" class="btn btn-primary" id="submit">Translate</button>
     </form>
-
-    <?php
-        //Send request to API if it was sent to site
-        if(isset($_FILES["subtitleFile"]) && isset($_POST["source"]) && isset($_POST["targets"])) {
-            $url = "{$protocol}{$_SERVER['HTTP_HOST']}/api/translate.php";
-
-            $uploadName = $_FILES['subtitleFile']['name'];
-            $curlFile = curl_file_create($_FILES['subtitleFile']['tmp_name'], posted_filename: $uploadName);
-
-            $postData = array(
-                'subtitleFile' => $curlFile,
-                'source' => $_POST["source"],
-                'targets' => $_POST["targets"],
-            );
-
-            $ch = curl_init();
-
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_POST, count($postData));
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-            $result = curl_exec($ch);
-            $result = json_decode($result);
-
-            //Display message on error
-            if($result->status != "success") {
-                echo "<p class='text-center'>Failed: ".$result->message.'</p>';
-                exit();
-            }
-
-            $translations = $result->data->translations;
-
-            curl_close($ch);
-    ?>
-
-    <?php
-            //Download each translation as a file
-            foreach($translations as $translationTarget => $translationContent) {
-    ?>
-                <iframe src="text_to_file.php?content=<?=urlencode($translationContent)?>&target=<?=$translationTarget?>"></iframe>
-    <?php
-            }
-        }
-    ?>
 
 
     <script
