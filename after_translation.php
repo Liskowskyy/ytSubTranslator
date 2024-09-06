@@ -1,15 +1,6 @@
 <?php
     require("api/common.php");
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subtitles downloading...</title>
-    <meta http-equiv="refresh" content="0;url=<?=$protocol.$_SERVER['HTTP_HOST']?>" />
-</head>
-<body>
+?> 
     <?php
             //Send request to API if it was sent to site
             if(isset($_FILES["subtitleFile"]) && isset($_POST["source"]) && isset($_POST["targets"])) {
@@ -50,9 +41,12 @@
                 //If one file then download directly
                 if(count((array)$translations) == 1) {
                     foreach($translations as $translationTarget => $translationContent) {
-                ?>
-                    <iframe src="text_to_file.php?content=<?=urlencode($translationContent)?>&target=<?=$translationTarget?>"></iframe>
-                <?php
+                        ob_clean();
+                        $filename = date(DATE_ATOM)."-".$translationTarget.".srt";
+                        header('Content-Type: application/zip');
+                        header('Content-Length: ' . strlen($translationContent));
+                        header('Content-Disposition: attachment; filename="'.$filename.'"');
+                        echo $translationContent;
                     }
                 }
                 else if(count((array)$translations) > 1) {
@@ -75,5 +69,14 @@
                 }
             }
         ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subtitles downloading...</title>
+    <meta http-equiv="refresh" content="0;url=<?=$protocol.$_SERVER['HTTP_HOST']?>" />
+</head>
+<body>
 </body>
 </html>
