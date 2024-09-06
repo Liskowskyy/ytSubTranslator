@@ -10,11 +10,23 @@
     </style>
 </head>
 <body>
+    <?php
+        //Set protocol, mismatch causes issues on prod server
+        if (isset($_SERVER['HTTPS']) &&
+        ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1) ||
+        isset($_SERVER['HTTP_X_FORWARDED_PROTO']) &&
+        $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
+            $protocol = 'https://';
+        }
+        else {
+            $protocol = 'http://';
+        }
+    ?>
     <h1 class="text-center">Hello world!</h1>
 
     <?php
         //Get usage data from API
-        $json = file_get_contents("http://{$_SERVER['HTTP_HOST']}/api/get-usage.php");
+        $json = file_get_contents("{$protocol}{$_SERVER['HTTP_HOST']}/api/get-usage.php");
         $stats = json_decode($json);
         $stats = $stats->data;
 
@@ -32,7 +44,7 @@
 
     <?php
         //Get langs from API
-        $json = file_get_contents("http://{$_SERVER['HTTP_HOST']}/api/list-langs.php");
+        $json = file_get_contents("{$protocol}{$_SERVER['HTTP_HOST']}/api/list-langs.php");
         $langs = json_decode($json);
         $sourceLangs = $langs->data->sourceLanguages;
         $targetLangs = $langs->data->targetLanguages;
@@ -90,7 +102,7 @@
     <?php
         //Send request to API if it was sent to site
         if(isset($_FILES["subtitleFile"]) && isset($_POST["source"]) && isset($_POST["targets"])) {
-            $url = "http://{$_SERVER['HTTP_HOST']}/api/translate.php";
+            $url = "{$_SERVER['HTTP_HOST']}/api/translate.php";
 
             $uploadName = $_FILES['subtitleFile']['name'];
             $curlFile = curl_file_create($_FILES['subtitleFile']['tmp_name'], posted_filename: $uploadName);
