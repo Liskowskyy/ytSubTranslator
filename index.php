@@ -37,7 +37,7 @@
     
     <div class="text-center">
         <div class="progress center-block" style="width:50%">
-            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="<?=$characterLimit-$charactersUsed?>" aria-valuemin="0" aria-valuemax="<?=$characterLimit?>" style="width: <?=($characterLimit-$charactersUsed)/$characterLimit*100?>%"></div>
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" title="Percentage of characters left for translations" aria-valuenow="<?=$characterLimit-$charactersUsed?>" aria-valuemin="0" aria-valuemax="<?=$characterLimit?>" style="width: <?=($characterLimit-$charactersUsed)/$characterLimit*100?>%"></div>
         </div>
     </div>
 
@@ -83,7 +83,7 @@
                     foreach ($targetLangs as $targetLang) {
                 ?>
                     <div class="form-check form-check-inline">
-                        <input type="checkbox" class="form-check-input target-lang-checkbox" value="<?=$targetLang->code?>">
+                        <input type="checkbox" class="form-check-input target-lang-checkbox" id="<?=$targetLang->code?>" value="<?=$targetLang->code?>">
                         <label class="form-check-label" for="<?=$targetLang->code?>">
                             <?=$targetLang->name?>
                             <sup class="fSupport"> <!--Add a superscript f if target lang supports formality settings -->
