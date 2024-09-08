@@ -29,7 +29,7 @@
     <h1 class="text-center">Hello world!</h1>
     <?php
         //Get usage data from API
-        $json = file_get_contents("{$protocol}{$_SERVER['HTTP_HOST']}/api/get-usage.php");
+        $json = file_get_contents("{$protocol}{$_SERVER['HTTP_HOST']}/api/get-usage.php.cache");
         $stats = json_decode($json);
         $stats = $stats->data;
 
