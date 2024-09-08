@@ -1,9 +1,17 @@
+<?php
+        require("api/common.php");
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subtitle Translator</title>
+    <title>Bulk Subtitle Translator</title>
+    <meta content="Bulk Subtitle Translator" property="og:title">
+    <meta content="Translate your video's subtitles into 29 languages at once!" property="og:description">
+    <meta content="Bulk Subtitle Translator" property="og:site_name">
+    <meta content="<?=$protocol.$_SERVER['HTTP_HOST']?>/android-chrome-512x512.png" property='og:image'>
+    <meta name="theme-color" content="#373F47">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
         .progress { margin-left: auto; margin-right:auto; }
@@ -18,11 +26,7 @@
     <meta name="theme-color" content="#ffffff">
 </head>
 <body>
-    <?php
-        require("api/common.php");
-    ?>
     <h1 class="text-center">Hello world!</h1>
-
     <?php
         //Get usage data from API
         $json = file_get_contents("{$protocol}{$_SERVER['HTTP_HOST']}/api/get-usage.php");
