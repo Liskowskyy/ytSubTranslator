@@ -117,6 +117,9 @@
             $response["status"] = "success";
 
             echo json_encode($response);
+
+            //Update usage for GUI index after each translation
+            shell_exec("php get-usage.php &");
     }
     catch(Exception $e) {
         //Get error message and return it
