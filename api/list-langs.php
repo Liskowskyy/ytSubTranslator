@@ -2,6 +2,18 @@
     //Set content type
     header('Content-Type: application/json; charset=utf-8');
 
+    //Check if cache file exists
+    $cachefile = basename($_SERVER['PHP_SELF']).'.cache';
+    if(file_exists($cachefile)) {
+        //Output cache if it exists
+        $cacheContent = file_get_contents($cachefile);
+        echo $cacheContent;
+        exit;
+    }
+
+    //If cache doesn't exist, start caching
+    ob_start();
+
     //Set Composer root
     require_once(__DIR__."/../vendor/autoload.php");
 
@@ -34,7 +46,10 @@
         $response["data"]["targetLanguages"] = $targetLanguages;
 
         echo json_encode($response);
-        
+
+        //Cache only on success
+        $cacheContent = ob_get_contents();
+        file_put_contents($cachefile, $cacheContent);
     }
     catch(Exception $e) {
         //Get error message and return it

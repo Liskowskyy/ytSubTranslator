@@ -10,3 +10,6 @@ config.php
 # Composer
 composer.phar
 /vendor/
+
+# Cache
+*.cache

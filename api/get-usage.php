@@ -1,4 +1,7 @@
 <?php
+    //Always cache, the endpoint should always return up-to-date data, but index.php can just used the cached version
+    ob_start();
+
     //Set content type
     header('Content-Type: application/json; charset=utf-8');
 
@@ -29,6 +32,11 @@
             $response["data"]["limitReached"] = $limitReached;
 
             echo json_encode($response);
+
+            //Cache only on success
+            $cachefile = basename($_SERVER['PHP_SELF']).'.cache';       
+            $cacheContent = ob_get_contents();
+            file_put_contents($cachefile, $cacheContent);
         }
     }
     catch(Exception $e) {
