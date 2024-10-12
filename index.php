@@ -16,6 +16,11 @@
     <style>
         .progress { margin-left: auto; margin-right:auto; }
         .fSupport {visibility: hidden;} /* Hide formality support by default */
+        ul {
+            column-count: 2;
+            column-gap: 2rem;
+            list-style: none;
+        }
     </style>
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -63,17 +68,19 @@
         <br>
 
         <div class="form-group">
-        <label class="form-select-label" for="sourceLangSelect">Source language:</label>
-            <select class="form-control" id="sourceLangSelect" name="source">
-                <?php
-                    //List all source langs
-                    foreach ($sourceLangs as $sourceLang) {
-                ?>
-                    <option value="<?=$sourceLang->code?>"><?=$sourceLang->name?></option>
-                <?php
-                    }
-                ?>
-            </select>
+            <div class="form-floating">
+                <select class="form-control form-select" id="sourceLangSelect" name="source">
+                    <?php
+                        //List all source langs
+                        foreach ($sourceLangs as $sourceLang) {
+                    ?>
+                        <option value="<?=$sourceLang->code?>"><?=$sourceLang->name?></option>
+                    <?php
+                        }
+                    ?>
+                </select>
+                <label class="form-select-label" for="sourceLangSelect">Source language:</label>
+            </div>
         </div>
 
         <br>
