@@ -94,11 +94,19 @@
         array_push($captionsArrayToTranslate, $caption->text);
     }
 
+    //Counter for billed characters
+    $billedChars = 0;
+
     //Enclose in try to return an error if API Key is invalid or other error
     try {
             foreach($targets as $target) {
                 //Translate subs
                 $translationResult = $deepl->translateText($captionsArrayToTranslate, $source, $target, ['formality' => $formality]);
+
+                //Add currently billed chars to global counter
+                foreach($translationResult as $result) {
+                    $billedChars += $result->billedCharacters;
+                }
 
                 $subtitlesTranslated = new Subtitles();
                 
@@ -112,9 +120,10 @@
                 $response["data"]["translations"][$target] = $subtitlesTranslatedString;
             }
 
-            //Return translation
-            //$response["data"]["content"] = $subContents;
+            //Return status
             $response["status"] = "success";
+            //Return billed chars
+            $response["data"]["billedChars"] = $billedChars;
 
             echo json_encode($response);
 
