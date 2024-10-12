@@ -56,9 +56,8 @@
     <br>
 
     <form action="after_translation.php" method="post" enctype="multipart/form-data" class="text-center">
-        <div class="custom-file center-block">
-            <input type="file" class="custom-file-input" id="subtitleFile" name="subtitleFile" accept=".srt, .vtt, .sbv" required>
-            <label class="custom-file-label" for="subtitleFile">Choose file</label>
+        <div class="row justify-content-center">
+            <input type="file" class="form-control" type="file" id="subtitleFile" name="subtitleFile" accept=".srt, .vtt, .sbv" style="width:50%" required>
         </div>
 
         <br>
