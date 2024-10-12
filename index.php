@@ -18,7 +18,7 @@
         .fSupport {visibility: hidden;} /* Hide formality support by default */
         ul {
             column-count: 2;
-            column-gap: 2rem;
+            column-gap: 1rem;
             list-style: none;
         }
     </style>
@@ -87,26 +87,27 @@
 
         <div class="form-group">
             <label>Target languages:</label>
-            <div class="" style="">
+            <ul>
                 <?php
                     //List all target langs
                     foreach ($targetLangs as $targetLang) {
                 ?>
-                    <div class="form-check form-check-inline">
+                    <li>
+                        <label>
                         <input type="checkbox" class="form-check-input target-lang-checkbox" id="<?=$targetLang->code?>" value="<?=$targetLang->code?>">
-                        <label class="form-check-label" for="<?=$targetLang->code?>">
+                        <span>
                             <?=$targetLang->name?>
                             <sup class="fSupport"> <!--Add a superscript f if target lang supports formality settings -->
                                 <?php
                                     if($targetLang->supportsFormality) echo "f";
                                 ?>
-                            </sup>
+                        </span>
                         </label>
-                    </div>
+                    </li>
                 <?php
                     }
                 ?>
-            </div>
+            </ul>
         </div>
 
         <span class="fSupport" style="font-size: small;">
