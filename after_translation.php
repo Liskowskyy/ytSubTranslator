@@ -38,10 +38,11 @@
         ?>
 
         <?php
+            ob_clean();
+            ob_end_flush(); //ZIP Downloading is broken without it
                 //If one file then download directly
                 if(count((array)$translations) == 1) {
                     foreach($translations as $translationTarget => $translationContent) {
-                        ob_clean();
                         $filename = date(DATE_ATOM)."-".$translationTarget.".srt";
                         header('Content-Type: application/zip');
                         header('Content-Length: ' . strlen($translationContent));
@@ -68,15 +69,6 @@
                     readfile($file);
                 }
             }
+
+            //Don't put HTML below, it's just such a headache
         ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subtitles downloading...</title>
-    <meta http-equiv="refresh" content="0;url=<?=$protocol.$_SERVER['HTTP_HOST']?>" />
-</head>
-<body>
-</body>
-</html>
