@@ -133,6 +133,7 @@
         <div class="form-group">
             <div class="col text-center">
                 <button type="submit" class="btn btn-primary col-lg-6" id="submit">Translate</button>
+                <p id="errorMessage"></p>
             </div>
         </div>
     </form>
@@ -224,6 +225,7 @@
         //Form POST handler
         $("#transForm").submit(function(e) {
             e.preventDefault();
+            $("#errorMessage").html(""); //Make error message blank on new request
 
             //Change submit text to spinner while request is being processed
             $('#submit').prop('disabled', true);
@@ -268,8 +270,16 @@
                                 saveAs(blob, filename);
                         });
                     }
-                    
-                    //Restore submit text on success
+                },
+                error: function(request) {
+                    let responseText = JSON.parse(request.responseText);
+                    let status = responseText["status"];
+                    status = status.charAt(0).toUpperCase() + status.slice(1);
+                    let message = responseText["message"];
+                    $("#errorMessage").html(status+": "+message);
+                },
+                complete: function() {
+                    //Restore submit text regardless of outcome
                     $('#submit').prop('disabled', false);
                     $('#submit').html(initialBtnText);
                 }
