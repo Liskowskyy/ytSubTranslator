@@ -42,11 +42,11 @@
         $characterLimit = $stats->characterLimit;
     ?>
 
-    <p class="text-center col-lg-6 offset-lg-3">As of now, youse have used <?=number_format($charactersUsed)?> of <?=number_format($characterLimit)?> characters for translation shared between all users.</p>
+    <p class="text-center col-lg-6 offset-lg-3">As of now, youse have used <span id="tokenDisplay"><?=number_format($charactersUsed)?> of <?=number_format($characterLimit)?></span> characters for translation shared between all users.</p>
     
     <div class="col-lg-6 offset-lg-3">
         <div class="progress center-block">
-            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" title="Percentage of characters left for translations" aria-valuenow="<?=$characterLimit-$charactersUsed?>" aria-valuemin="0" aria-valuemax="<?=$characterLimit?>" style="width: <?=($characterLimit-$charactersUsed)/$characterLimit*100?>%"></div>
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" id="tokenBar" title="Percentage of characters left for translations" aria-valuenow="<?=$characterLimit-$charactersUsed?>" aria-valuemin="0" aria-valuemax="<?=$characterLimit?>" style="width: <?=($characterLimit-$charactersUsed)/$characterLimit*100?>%"></div>
         </div>
     </div>
 
@@ -140,8 +140,8 @@
 
 
     <script
-    src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
-    integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8="
+    src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
     crossorigin="anonymous"></script>
 
     <script>
@@ -159,6 +159,29 @@
             if(this.value != "default") $('.fSupport').css('visibility', 'visible');
             else $('.fSupport').css('visibility', 'hidden')
         });
+    </script>
+
+    <script>
+        function updateCharacterCount() {
+            $.getJSON( "api/get-usage.php", function( data ) {
+                let charactersUsed = data.data.charactersUsed;
+                let formattedCharactersUsed = Number(charactersUsed).toLocaleString("en-US");
+                let characterLimit = data.data.characterLimit;
+                let formattedcharacterLimit = Number(characterLimit).toLocaleString("en-US");
+
+                let width = `${(characterLimit-charactersUsed)/characterLimit*100}%`;
+
+                $("#tokenDisplay").html(`${formattedCharactersUsed} of ${formattedcharacterLimit}`);
+
+                $("#tokenBar").attr("aria-valuenow", characterLimit-charactersUsed);
+                $("#tokenBar").attr("aria-valuemax", characterLimit);
+                $("#tokenBar").css("width", width);
+            });
+        }
+
+        let updateBar = window.setInterval(function(){
+            updateCharacterCount()
+        }, 10000);
     </script>
 
 
