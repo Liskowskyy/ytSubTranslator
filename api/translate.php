@@ -101,18 +101,19 @@
     try {
             foreach($targets as $target) {
                 //Translate subs
-                $translationResult = $deepl->translateText($captionsArrayToTranslate, $source, $target, ['formality' => $formality]);
+                //First join all subtitles into one string, so DeepL doesn't lose context or misidentify the language
+                //Then explode string into array to perserve the expected format
+                $translationResult = $deepl->translateText(implode(PHP_EOL, $captionsArrayToTranslate), $source, $target, ['formality' => $formality]);
+                $translationResultText = explode(PHP_EOL, $translationResult->text);
 
                 //Add currently billed chars to global counter
-                foreach($translationResult as $result) {
-                    $billedChars += $result->billedCharacters;
-                }
+                $billedChars += $translationResult->billedCharacters;
 
                 $subtitlesTranslated = new Subtitles();
                 
                 for($i = 0; $i<count($captionsArrayToTranslate); $i++) {
                     //Recreate subtitles with original times but translated subtitles
-                    $subtitlesTranslated->add($captions[$i]->startTime, $captions[$i]->endTime, $translationResult[$i]);
+                    $subtitlesTranslated->add($captions[$i]->startTime, $captions[$i]->endTime, $translationResultText[$i]);
                 }
 
                 $subtitlesTranslatedString = $subtitlesTranslated->content('srt');
