@@ -37,7 +37,7 @@
     <h1 class="text-center col-lg-6 offset-lg-3">Hello world!</h1>
     <?php
         //Get usage data from API
-        $json = file_get_contents("{$protocol}{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}/api/get-usage.php.cache");
+        $json = file_get_contents("api/get-usage.php.cache");
         $stats = json_decode($json);
         $stats = $stats->data;
 
