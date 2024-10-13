@@ -128,7 +128,7 @@
 
         <br>
 
-        <input id="targets" type="hidden" name="targets" value="">
+        <input id="targets" type="hidden" name="targets" value="" required>
 
         <div class="form-group">
             <div class="col text-center">
@@ -194,6 +194,30 @@
         });
     </script>
 
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script>
+        //Form validator
+
+        function checkValid() {
+            let form = $("#transForm")
+            form.validate({errorPlacement: function(error,element) {
+                    return true;
+            }, ignore: []}); //Don't ignore the hidden targets field
+
+            let valid = form.valid();
+            if(!valid) {
+                $('#submit').prop('disabled', true);
+            }
+            else {
+                $('#submit').prop('disabled', false);
+            }
+        }
+
+        //Valdiate on page load, and every change in form
+        $(document).ready(checkValid);
+        $("#transForm").on("change", checkValid);
+    </script>
+
     <script type="text/javascript" src="jszip.min.js"></script>
     <script type="text/javascript" src="FileSaver.min.js"></script>
     <script>
@@ -223,7 +247,6 @@
                         //Save into a single .srt file if one translation
                         let langCode = translationsCodes[0];
                         let content = translations[langCode];
-                        console.log(langCode, content);
 
                         let blob = new Blob([content], {type: "text/plain;charset=utf-8"});
                         let filename = new Date().toLocaleString()+"  "+langCode;
