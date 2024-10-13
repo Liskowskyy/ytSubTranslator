@@ -59,7 +59,7 @@
 
     <br>
 
-    <form action="after_translation.php" method="post" enctype="multipart/form-data" class="col-lg-4 offset-lg-4">
+    <form action="api/translate.php" method="post" enctype="multipart/form-data" id="transForm" class="col-lg-4 offset-lg-4">
         <div class="form-group">
             <input type="file" class="form-control" type="file" id="subtitleFile" name="subtitleFile" accept=".srt, .vtt, .sbv" required>
         </div>
@@ -191,6 +191,66 @@
         document.addEventListener('drop', (e) => {
             document.getElementById('subtitleFile').files = e.dataTransfer.files;
             e.preventDefault()
+        });
+    </script>
+
+    <script type="text/javascript" src="jszip.min.js"></script>
+    <script type="text/javascript" src="FileSaver.min.js"></script>
+    <script>
+        //Form POST handler
+        $("#transForm").submit(function(e) {
+            e.preventDefault();
+
+            //Change submit text to spinner while request is being processed
+            $('#submit').prop('disabled', true);
+            let initialBtnText = $('#submit').html();
+            $('#submit').html('<div class="spinner-border spinner-border-sm" role="status"></div>');
+
+            let transForm = $(this);
+            let URL = transForm.attr('action');
+
+            $.ajax({
+                type: "POST",
+                url: URL,
+                data: new FormData(this),
+                processData: false, 
+                contentType: false,
+                success: function(data) {
+                    let translations = data.data.translations;
+                    let translationsCodes = Object.keys(translations)
+
+                    if(translationsCodes.length == 1) {
+                        //Save into a single .srt file if one translation
+                        let langCode = translationsCodes[0];
+                        let content = translations[langCode];
+                        console.log(langCode, content);
+
+                        let blob = new Blob([content], {type: "text/plain;charset=utf-8"});
+                        let filename = new Date().toLocaleString()+"  "+langCode;
+                        filename = filename.replace(/[^a-z0-9]/gi, '-')+".srt";
+                        saveAs(blob, filename);
+                    }
+                    else if(translationsCodes.length > 1) {
+                        //Save into a .zip archive if multiple translations
+                        let zip = new JSZip();
+
+                        for (const [langCode, content] of Object.entries(translations)) {
+                            zip.file(langCode+".srt", content);
+                        }
+
+                        zip.generateAsync({type:"blob"})
+                            .then(function(blob) {
+                                let filename = new Date().toLocaleString();
+                                filename = filename.replace(/[^a-z0-9]/gi, '-')+".zip";
+                                saveAs(blob, filename);
+                        });
+                    }
+                    
+                    //Restore submit text on success
+                    $('#submit').prop('disabled', false);
+                    $('#submit').html(initialBtnText);
+                }
+            });
         });
     </script>
 
