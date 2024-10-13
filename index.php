@@ -18,7 +18,6 @@
         .fSupport {visibility: hidden;} /* Hide formality support by default */
         ul {
             column-count: 2;
-            column-gap: 1rem;
             list-style: none;
         }
     </style>
