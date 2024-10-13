@@ -10,7 +10,7 @@
     <meta content="Bulk Subtitle Translator" property="og:title">
     <meta content="Translate your video's subtitles into 29 languages at once!" property="og:description">
     <meta content="Bulk Subtitle Translator" property="og:site_name">
-    <meta content="<?=$protocol.$_SERVER['HTTP_HOST']?>/android-chrome-512x512.png" property='og:image'>
+    <meta content="<?=$protocol.$fullURL?>/android-chrome-512x512.png" property='og:image'>
     <meta name="theme-color" content="#373F47">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
@@ -55,7 +55,7 @@
 
     <?php
         //Get langs from API
-        $json = file_get_contents("{$protocol}{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}/api/list-langs.php");
+        $json = file_get_contents("{$protocol}{$fullURL}/api/list-langs.php");
         $langs = json_decode($json);
         $sourceLangs = $langs->data->sourceLanguages;
         $targetLangs = $langs->data->targetLanguages;

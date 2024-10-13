@@ -8,6 +8,8 @@
         exit();
     }
 
+    $fullURL = $_SERVER['SERVER_NAME'].substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/'));
+
     //Set protocol, mismatch causes issues on prod server
     if (isset($_SERVER['HTTPS']) &&
     ($_SERVER['HTTPS'] == 'on' || $_SERVER['HTTPS'] == 1) ||
