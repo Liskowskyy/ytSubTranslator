@@ -21,7 +21,7 @@
 <script>
     let path = window.location.pathname;
     let page = path.split("/").pop();
-    if(page == "" || page == "index.php" || page == "index") page = "/";
+    if(page == "" || page == "index.php" || page == "index") page = "./";
 
     $("#bottomNavbar").ready(function() {
         let currPageLink = $(`a[href='${page}']`);
