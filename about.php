@@ -17,6 +17,9 @@
         .navbar {
             padding: 0 !important;
         }
+        body {
+            padding-bottom: 65px;
+        }
     </style>
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">

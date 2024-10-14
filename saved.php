@@ -18,11 +18,15 @@
             padding: 0 !important;
         }
         .card {
-            margin: 5%;
+            margin-top: 5%;
+            margin-bottom: 5%;
         }
         .card-text {
             font-size: small;
             font-style: italic;
+        }
+        body {
+            padding-bottom: 65px;
         }
     </style>
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
