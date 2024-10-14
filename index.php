@@ -229,6 +229,24 @@
     <script type="text/javascript" src="jszip.min.js"></script>
     <script type="text/javascript" src="FileSaver.min.js"></script>
     <script>
+        function saveToLocalStorage(blob, filename) {
+            let uuid = self.crypto.randomUUID();
+            const reader = new FileReader();
+
+            reader.onload = (event) => {
+                let base64 = event.target.result;
+                let dataType = base64.split(';base64,')[0];
+                let content = base64.split(';base64,')[1];
+                let timestamp = Date.now();
+
+                let toStore = JSON.stringify({dataType: dataType, content: content, timestamp: timestamp, filename: filename});
+
+                localStorage.setItem(uuid, toStore);
+            }
+
+            reader.readAsDataURL(blob);
+        }
+
         //Form POST handler
         $("#transForm").submit(function(e) {
             e.preventDefault();
@@ -263,13 +281,7 @@
                         let filename = new Date().toLocaleString()+"  "+langCode;
                         filename = filename.replace(/[^a-z0-9]/gi, '-')+".srt";
                         saveAs(blob, filename);
-                        const reader = new FileReader();
-
-                        reader.onload = (event) => {
-                            localStorage.setItem(uuid, event.target.result);
-                        }
-
-                        reader.readAsDataURL(blob);
+                        saveToLocalStorage(blob, filename);
                     }
                     else if(translationsCodes.length > 1) {
                         //Save into a .zip archive if multiple translations
@@ -284,13 +296,7 @@
                                 let filename = new Date().toLocaleString();
                                 filename = filename.replace(/[^a-z0-9]/gi, '-')+".zip";
                                 saveAs(blob, filename);
-                                const reader = new FileReader();
-
-                                reader.onload = (event) => {
-                                    localStorage.setItem(uuid, event.target.result);
-                                }
-
-                                reader.readAsDataURL(blob);
+                                saveToLocalStorage(blob, filename);
                         });
                     }
                 },
