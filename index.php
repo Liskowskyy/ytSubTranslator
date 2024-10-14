@@ -249,6 +249,8 @@
                 processData: false, 
                 contentType: false,
                 success: function(data) {
+                    let uuid = Math.random().toString(36).slice(-6); //UUID for local storage key
+
                     let translations = data.data.translations;
                     let translationsCodes = Object.keys(translations)
 
@@ -261,6 +263,13 @@
                         let filename = new Date().toLocaleString()+"  "+langCode;
                         filename = filename.replace(/[^a-z0-9]/gi, '-')+".srt";
                         saveAs(blob, filename);
+                        const reader = new FileReader();
+
+                        reader.onload = (event) => {
+                            localStorage.setItem(uuid, event.target.result);
+                        }
+
+                        reader.readAsDataURL(blob);
                     }
                     else if(translationsCodes.length > 1) {
                         //Save into a .zip archive if multiple translations
@@ -275,6 +284,13 @@
                                 let filename = new Date().toLocaleString();
                                 filename = filename.replace(/[^a-z0-9]/gi, '-')+".zip";
                                 saveAs(blob, filename);
+                                const reader = new FileReader();
+
+                                reader.onload = (event) => {
+                                    localStorage.setItem(uuid, event.target.result);
+                                }
+
+                                reader.readAsDataURL(blob);
                         });
                     }
                 },
