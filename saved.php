@@ -17,6 +17,13 @@
         .navbar {
             padding: 0 !important;
         }
+        .card {
+            margin: 5%;
+        }
+        .card-text {
+            font-size: small;
+            font-style: italic;
+        }
     </style>
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -30,15 +37,15 @@
     <h1 class="text-center col-lg-6 offset-lg-3">Saved translations</h1>
 
     <div id="savedList" class="col-lg-4 offset-lg-4">
-        <div class="card">
-        <div class="card-header">
-            Translation
-        </div>
-        <div class="card-body">
-            <h5 class="card-title">Time and date</h5>
-            <p class="card-text">Small excerpt from translation</p>
-            <a href="#" class="btn btn-primary">Download</a>
-        </div>
+        <div class="card" id="cardToClone" style="display: none;">
+            <div class="card-header">
+                Translation
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Time and date</h5>
+                <p class="card-text">Small excerpt from translation</p>
+                <a href="#" class="btn btn-primary">Download</a>
+            </div>
         </div>
     </div>
 
@@ -54,10 +61,60 @@
     <script type="text/javascript" src="jszip.min.js"></script>
     <script type="text/javascript" src="FileSaver.min.js"></script>
     <script>
-        //TODO: Downloader for translations saved into application memory
         function loadItems() {
+            $( ".clonedCard" ).remove();
+
             const items = {...localStorage};
-            console.log(items);
+            let orderedItemsValues = [];
+            $.each(items, function(key, value) {
+                orderedItemsValues.push($.parseJSON(value)); //Add to new array
+            });
+            orderedItemsValues.sort(function(a, b){
+                return b.timestamp - a.timestamp; //Order by newest
+            });
+
+            let cardToClone = $('#cardToClone').clone();
+            cardToClone.removeAttr("id");
+            cardToClone.addClass("clonedCard")
+            cardToClone.css("display", "");
+            $.each(orderedItemsValues, function(key, value) {
+                let dateString = new Date(value.timestamp).toLocaleString();
+
+                let newCard = cardToClone.clone();
+                newCard.find(".card-title").html(dateString);
+                newCard.find(".card-text").html(value.origFile.replace(/(\r\n|\r|\n)/g, '<br>'));
+                newCard.find(".btn-primary").attr("translations", JSON.stringify(value.translations));
+                newCard.find(".btn-primary").attr("filename", value.filename);
+                newCard.find(".btn-primary").click(function() {
+                    let translations = $(this).attr("translations");
+                    translations = JSON.parse(translations);
+                    let translationsCodes = Object.keys(translations);
+                    let filename = $(this).attr("filename");
+
+                    if(translationsCodes.length == 1) {
+                        //Save into a single .srt file if one translation
+                        let langCode = translationsCodes[0];
+                        let content = translations[langCode];
+
+                        let blob = new Blob([content], {type: "text/plain;charset=utf-8"});
+                        saveAs(blob, filename);
+                    }
+                    else if(translationsCodes.length > 1) {
+                        //Save into a .zip archive if multiple translations
+                        let zip = new JSZip();
+
+                        for (const [langCode, content] of Object.entries(translations)) {
+                            zip.file(langCode+".srt", content);
+                        }
+
+                        zip.generateAsync({type:"blob"})
+                            .then(function(blob) {
+                                saveAs(blob, filename);
+                        });
+                    }
+                })
+                newCard.appendTo("#savedList");
+            });
         }
 
         $( document ).ready(loadItems); //Load items on page load
