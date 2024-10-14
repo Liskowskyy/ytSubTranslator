@@ -198,6 +198,7 @@
 
         document.addEventListener('drop', (e) => {
             document.getElementById('subtitleFile').files = e.dataTransfer.files;
+            $('#subtitleFile').trigger("change"); //Trigger change when file dropped
             e.preventDefault()
         });
     </script>
@@ -229,6 +230,29 @@
     <script type="text/javascript" src="jszip.min.js"></script>
     <script type="text/javascript" src="FileSaver.min.js"></script>
     <script>
+        let origFile = "";
+
+        //Original file contents for local storage preview
+        function getOrigFile() {
+            let file = $('#subtitleFile').prop('files')[0];
+            let fr = new FileReader();
+            fr.onload = function() {
+                let content = fr.result;
+                content = content.split(';base64,')[1];
+                origFile = atob(content);
+                //Leave only first 7 lines of file for preview
+                origFile = origFile.split('\n').slice(0, 7);
+                origFile = origFile.join("\n");
+            }
+            fr.readAsDataURL(file);
+        }
+
+        $("document").ready(function(){
+            $("#subtitleFile").change(function() {
+                getOrigFile();
+            });
+        });
+
         function saveToLocalStorage(blob, filename) {
             let uuid = self.crypto.randomUUID();
             const reader = new FileReader();
@@ -239,7 +263,7 @@
                 let content = base64.split(';base64,')[1];
                 let timestamp = Date.now();
 
-                let toStore = JSON.stringify({dataType: dataType, content: content, timestamp: timestamp, filename: filename});
+                let toStore = JSON.stringify({dataType: dataType, content: content, timestamp: timestamp, filename: filename, origFile: origFile});
 
                 localStorage.setItem(uuid, toStore);
             }
