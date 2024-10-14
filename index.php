@@ -240,6 +240,7 @@
                 let content = fr.result;
                 content = content.split(';base64,')[1];
                 origFile = atob(content);
+                origFile = origFile.replace(/^\d+\s*\n\d{2}:\d{2}:\d{2},\d{3} --> \d{2}:\d{2}:\d{2},\d{3}\s*\n/gm, ''); //Leave caption text only
                 //Leave only first 7 lines of file for preview
                 origFile = origFile.split('\n').slice(0, 7);
                 origFile = origFile.join("\n");
