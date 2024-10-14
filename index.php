@@ -230,31 +230,7 @@
     <script type="text/javascript" src="jszip.min.js"></script>
     <script type="text/javascript" src="FileSaver.min.js"></script>
     <script>
-        let origFile = "";
-
-        //Original file contents for local storage preview
-        function getOrigFile() {
-            let file = $('#subtitleFile').prop('files')[0];
-            let fr = new FileReader();
-            fr.onload = function() {
-                let content = fr.result;
-                content = content.split(';base64,')[1];
-                origFile = atob(content);
-                origFile = origFile.replace(/^\d+\s*\n\d{2}:\d{2}:\d{2},\d{3} --> \d{2}:\d{2}:\d{2},\d{3}\s*\n/gm, ''); //Leave caption text only
-                //Leave only first 7 lines of file for preview
-                origFile = origFile.split('\n').slice(0, 7);
-                origFile = origFile.join("\n");
-            }
-            fr.readAsDataURL(file);
-        }
-
-        $("document").ready(function(){
-            $("#subtitleFile").change(function() {
-                getOrigFile();
-            });
-        });
-
-        function saveToLocalStorage(blob, filename) {
+        function saveToLocalStorage(blob, filename, origFile) {
             let uuid = self.crypto.randomUUID();
             const reader = new FileReader();
 
@@ -294,6 +270,11 @@
                 success: function(data) {
                     let uuid = Math.random().toString(36).slice(-6); //UUID for local storage key
 
+                    let origFile = data.data.originalText; //Get original captions to save to local storage
+                    //Leave only first 4 lines of file for preview
+                    origFile = origFile.split(/\r?\n/).slice(0, 4); //Newlines regardless of OS
+                    origFile = origFile.join("\n");
+
                     let translations = data.data.translations;
                     let translationsCodes = Object.keys(translations)
 
@@ -306,7 +287,7 @@
                         let filename = new Date().toLocaleString()+"  "+langCode;
                         filename = filename.replace(/[^a-z0-9]/gi, '-')+".srt";
                         saveAs(blob, filename);
-                        saveToLocalStorage(blob, filename);
+                        saveToLocalStorage(blob, filename, origFile);
                     }
                     else if(translationsCodes.length > 1) {
                         //Save into a .zip archive if multiple translations
@@ -321,7 +302,7 @@
                                 let filename = new Date().toLocaleString();
                                 filename = filename.replace(/[^a-z0-9]/gi, '-')+".zip";
                                 saveAs(blob, filename);
-                                saveToLocalStorage(blob, filename);
+                                saveToLocalStorage(blob, filename, origFile);
                         });
                     }
                 },
