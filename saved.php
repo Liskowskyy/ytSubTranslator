@@ -55,6 +55,9 @@
                     </a>
                 </div>
             </div>
+            <div class="card-footer text-muted">
+                Target languages
+            </div>
         </div>
     </div>
 
@@ -96,6 +99,12 @@
                 newCard.find(".card-title").html(dateString);
                 newCard.find(".card-text").html(value.origFile.replace(/(\r\n|\r|\n)/g, '<br>'));
                 newCard.find(".btn-primary").attr("translations", JSON.stringify(value.translations));
+
+                let translations = newCard.find(".btn-primary").attr("translations");
+                translations = JSON.parse(translations);
+                let targetLangs = Object.keys(translations).join(", ");
+                newCard.find(".card-footer").html(targetLangs);
+
                 newCard.find(".btn-primary").attr("filename", value.filename);
                 newCard.find(".btn-danger").on("click", function() {
                     console.log(value.key);
@@ -103,8 +112,6 @@
                     loadItems();
                 });
                 newCard.find(".btn-primary").click(function() {
-                    let translations = $(this).attr("translations");
-                    translations = JSON.parse(translations);
                     let translationsCodes = Object.keys(translations);
                     let filename = $(this).attr("filename");
 
