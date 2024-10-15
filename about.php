@@ -32,6 +32,11 @@
 <body style="margin-left: 5%; margin-right: 5%;">
     <h1 class="text-center col-lg-6 offset-lg-3">About</h1>
 
+    <div class="text-center col-lg-6 offset-lg-3">
+        <a href="https://github.com/Liskowskyy/ytSubTranslator">
+            <img src="https://github-readme-stats.vercel.app/api/pin/?username=Liskowskyy&repo=ytSubTranslator&bg_color=434951&text_color=DEE2E6" />
+        </a>
+    </div>
 
     <script
     src="https://code.jquery.com/jquery-3.7.1.min.js"
