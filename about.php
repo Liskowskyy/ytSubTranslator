@@ -34,7 +34,7 @@
 
     <div class="text-center col-lg-6 offset-lg-3">
         <a href="https://github.com/Liskowskyy/ytSubTranslator">
-            <img src="https://github-readme-stats.vercel.app/api/pin/?username=Liskowskyy&repo=ytSubTranslator&bg_color=434951&text_color=DEE2E6" />
+            <img src="https://github-readme-stats.vercel.app/api/pin/?username=Liskowskyy&repo=ytSubTranslator&bg_color=272B2F&text_color=DEE2E6" />
         </a>
     </div>
 
