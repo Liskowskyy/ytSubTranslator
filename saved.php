@@ -48,7 +48,12 @@
             <div class="card-body">
                 <h5 class="card-title">Time and date</h5>
                 <p class="card-text">Small excerpt from translation</p>
-                <a href="#" class="btn btn-primary">Download</a>
+                <div>
+                    <a href="#" class="btn btn-primary">Download</a>
+                    <a class="btn btn-danger float-end">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24"><path fill="currentColor" d="M9 3v1H4v2h1v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6h1V4h-5V3zM7 6h10v13H7zm2 2v9h2V8zm4 0v9h2V8z"/></svg>
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -71,7 +76,10 @@
             const items = {...localStorage};
             let orderedItemsValues = [];
             $.each(items, function(key, value) {
-                orderedItemsValues.push($.parseJSON(value)); //Add to new array
+                //Save key for local storage reference
+                values = $.parseJSON(value);
+                values.key = key;
+                orderedItemsValues.push(values); //Add to new array
             });
             orderedItemsValues.sort(function(a, b){
                 return b.timestamp - a.timestamp; //Order by newest
@@ -89,6 +97,11 @@
                 newCard.find(".card-text").html(value.origFile.replace(/(\r\n|\r|\n)/g, '<br>'));
                 newCard.find(".btn-primary").attr("translations", JSON.stringify(value.translations));
                 newCard.find(".btn-primary").attr("filename", value.filename);
+                newCard.find(".btn-danger").on("click", function() {
+                    console.log(value.key);
+                    localStorage.removeItem(value.key); //Delete item on trash button click
+                    loadItems();
+                });
                 newCard.find(".btn-primary").click(function() {
                     let translations = $(this).attr("translations");
                     translations = JSON.parse(translations);
