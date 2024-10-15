@@ -10,17 +10,25 @@
     <meta content="Bulk Subtitle Translator" property="og:title">
     <meta content="Translate your video's subtitles into 29 languages at once!" property="og:description">
     <meta content="Bulk Subtitle Translator" property="og:site_name">
-    <meta content="<?=$protocol.$_SERVER['HTTP_HOST']?>/android-chrome-512x512.png" property='og:image'>
+    <meta content="<?=$protocol.$fullURL?>/android-chrome-512x512.png" property='og:image'>
     <meta name="theme-color" content="#373F47">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
         .progress { margin-left: auto; margin-right:auto; }
         .fSupport {visibility: hidden;} /* Hide formality support by default */
-        ul {
+        .form-group ul {
             column-count: 2;
             list-style: none;
         }
+
+        .navbar {
+            padding: 0 !important;
+        }
+        body {
+            padding-bottom: 65px;
+        }
     </style>
+    <link rel="stylesheet" href="scrollbar.css">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -33,7 +41,7 @@
     <h1 class="text-center col-lg-6 offset-lg-3">Hello world!</h1>
     <?php
         //Get usage data from API
-        $json = file_get_contents("{$protocol}{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}/api/get-usage.php.cache");
+        $json = file_get_contents("api/get-usage.php.cache");
         $stats = json_decode($json);
         $stats = $stats->data;
 
@@ -51,7 +59,7 @@
 
     <?php
         //Get langs from API
-        $json = file_get_contents("{$protocol}{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}/api/list-langs.php");
+        $json = file_get_contents("{$protocol}{$fullURL}/api/list-langs.php");
         $langs = json_decode($json);
         $sourceLangs = $langs->data->sourceLanguages;
         $targetLangs = $langs->data->targetLanguages;
@@ -138,11 +146,14 @@
         </div>
     </form>
 
-
     <script
     src="https://code.jquery.com/jquery-3.7.1.min.js"
     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
     crossorigin="anonymous"></script>
+    
+    <?php
+        require("navbar.html");
+    ?>
 
     <script>
         //Generate comma seperated list of target languages into hidden targets value
@@ -191,6 +202,7 @@
 
         document.addEventListener('drop', (e) => {
             document.getElementById('subtitleFile').files = e.dataTransfer.files;
+            $('#subtitleFile').trigger("change"); //Trigger change when file dropped
             e.preventDefault()
         });
     </script>
@@ -222,6 +234,14 @@
     <script type="text/javascript" src="jszip.min.js"></script>
     <script type="text/javascript" src="FileSaver.min.js"></script>
     <script>
+        function saveToLocalStorage(translations, filename, origFile) {
+            let uuid = self.crypto.randomUUID();
+            let timestamp = Date.now();
+
+            let toStore = JSON.stringify({translations: translations, timestamp: timestamp, filename: filename, origFile: origFile});
+            localStorage.setItem(uuid, toStore);
+        }
+
         //Form POST handler
         $("#transForm").submit(function(e) {
             e.preventDefault();
@@ -242,6 +262,13 @@
                 processData: false, 
                 contentType: false,
                 success: function(data) {
+                    let uuid = Math.random().toString(36).slice(-6); //UUID for local storage key
+
+                    let origFile = data.data.originalText; //Get original captions to save to local storage
+                    //Leave only first 4 lines of file for preview
+                    origFile = origFile.split(/\r?\n/).slice(0, 4); //Newlines regardless of OS
+                    origFile = origFile.join("\n");
+
                     let translations = data.data.translations;
                     let translationsCodes = Object.keys(translations)
 
@@ -254,6 +281,7 @@
                         let filename = new Date().toLocaleString()+"  "+langCode;
                         filename = filename.replace(/[^a-z0-9]/gi, '-')+".srt";
                         saveAs(blob, filename);
+                        saveToLocalStorage(translations, filename, origFile);
                     }
                     else if(translationsCodes.length > 1) {
                         //Save into a .zip archive if multiple translations
@@ -268,6 +296,7 @@
                                 let filename = new Date().toLocaleString();
                                 filename = filename.replace(/[^a-z0-9]/gi, '-')+".zip";
                                 saveAs(blob, filename);
+                                saveToLocalStorage(translations, filename, origFile);
                         });
                     }
                 },

@@ -118,6 +118,8 @@
 
                 $subtitlesTranslatedString = $subtitlesTranslated->content('srt');
 
+                $response["data"]["originalText"] = implode(PHP_EOL, $captionsArrayToTranslate);
+
                 $response["data"]["translations"][$target] = $subtitlesTranslatedString;
             }
 
